@@ -1,0 +1,56 @@
+.text-color {
+  color: #0495ca;
+}
+
+.text-btn {
+  /* trbl */
+  padding: 18px 38px 18px 38px;
+  border: 2px solid #0495ca;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.text-btn:hover {
+  /* trbl */
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0px;
+}
+
+/* masonry */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -30px;
+  width: auto;
+}
+
+.my-masonry-grid_column {
+  padding-left: 30px;
+  background-clip: padding-box;
+}
+
+.image-item {
+  margin-bottom: 30px;
+}
+
+.image-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* paginated nav */
+.normal-nav {
+  color: #057a53;
+  padding: 5px 10px;
+}
+
+.active-nav {
+  background-color: #13855f;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
