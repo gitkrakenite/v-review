@@ -2,6 +2,7 @@ export const dummyReview = [
   {
     id: 1,
     title: "Village Market",
+    category: "hotel",
     image1:
       "https://images.pexels.com/photos/3052848/pexels-photo-3052848.jpeg?auto=compress&cs=tinysrgb&w=1600",
     image2:
@@ -27,6 +28,7 @@ export const dummyReview = [
   {
     id: 2,
     title: "Garage Square",
+    category: "recreation",
     image1:
       "https://images.pexels.com/photos/5013576/pexels-photo-5013576.jpeg?auto=compress&cs=tinysrgb&w=1600",
     image2:
@@ -52,6 +54,7 @@ export const dummyReview = [
   {
     id: 3,
     title: "choma zone",
+    category: "food & chill",
     image1:
       "https://images.pexels.com/photos/3276235/pexels-photo-3276235.jpeg?auto=compress&cs=tinysrgb&w=1600",
     image2:
@@ -77,6 +80,7 @@ export const dummyReview = [
   {
     id: 4,
     title: "Givanjii",
+    category: "sports",
     image1:
       "https://images.pexels.com/photos/261169/pexels-photo-261169.jpeg?auto=compress&cs=tinysrgb&w=1600",
     image2:
@@ -105,6 +109,7 @@ export const singleReview = [
   {
     id: 2,
     title: "Garage Square",
+    category: "recreation",
     image1:
       "https://images.pexels.com/photos/5013576/pexels-photo-5013576.jpeg?auto=compress&cs=tinysrgb&w=1600",
     image2:

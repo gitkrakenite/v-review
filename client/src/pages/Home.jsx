@@ -1,9 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Feed from "../components/Feed";
 import { AiOutlinePlus } from "react-icons/ai";
-// import Tips from "../components/Tips";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../features/auth/authSlice";
+import { useEffect } from "react";
 
 const Home = () => {
+  const { user } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate("/login");
+  };
+
   return (
     <div>
       {/* wrapper */}
@@ -36,7 +48,9 @@ const Home = () => {
                 />
               </p>
             </Link>
-            <p>LOGOUT</p>
+            <p className="cursor-pointer" onClick={handleLogout}>
+              LOGOUT
+            </p>
           </div>
         </div>
         {/* wrapper */}

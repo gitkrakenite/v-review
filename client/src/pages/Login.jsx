@@ -1,18 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { login, reset } from "../features/auth/authSlice";
+import Spinner from "../components/Spinner";
 
 const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("Please Check Login Details");
+      toast.error("Also Check Network");
+    }
+
+    if (user || isSuccess) {
+      navigate("/home");
+      // toast.success("Welcome Back");
+    }
+
+    if (navigator.onLine) {
+      console.log("online");
+    } else {
+      toast.error("Network Error");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, isLoading, navigate, dispatch]);
+
+  const [loading, setLoading] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!username || !password) {
       return toast.error("Please Fill All Fields", { theme: "dark" });
     }
+    setLoading(true);
+    const userData = { username, password };
+    dispatch(login(userData));
+    setLoading(false);
   };
 
   return (
@@ -97,12 +133,16 @@ const Login = () => {
             </div>
 
             <div>
-              <button
-                className="bg-[#087fd4] w-full p-[9px] rounded-md text-zinc-300 hover:text-zinc-200"
-                onClick={handleLogin}
-              >
-                Sign In Now
-              </button>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <button
+                  className="bg-[#087fd4] w-full p-[9px] rounded-md text-zinc-300 hover:text-zinc-200"
+                  onClick={handleLogin}
+                >
+                  Sign In Now
+                </button>
+              )}
             </div>
             <div className="mt-[30px] flex items-center gap-[20px] flex-wrap justify-between">
               <Link to="/register" className="underline">

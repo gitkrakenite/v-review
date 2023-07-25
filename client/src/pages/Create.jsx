@@ -108,6 +108,9 @@ const Create = () => {
                   <option value="">Choose</option>
                   <option value="automobile">Automobile</option>
                   <option value="hotel">Hotel</option>
+                  <option value="movies">Movies&Shows</option>
+                  <option value="sports">Sports&fitness</option>
+                  <option value="fashion">fashion&style</option>
                   <option value="house">house&products</option>
                   <option value="equipment">Equipment</option>
                   <option value="other">Others</option>

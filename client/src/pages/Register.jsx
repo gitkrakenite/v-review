@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { register, reset } from "../features/auth/authSlice";
+import axios from "../axios";
+import Spinner from "../components/Spinner";
 
 const Register = () => {
   const [showPass, setShowPass] = useState(false);
@@ -10,6 +14,34 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (navigator.onLine) {
+      console.log("online");
+    } else {
+      toast.error("Network Error");
+    }
+
+    if (isError) {
+      toast.error("Please Check Network");
+    }
+
+    if (isSuccess || user) {
+      toast.success("Welcome to rivvy.com!");
+      navigate("/home");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  const [loading, setLoading] = useState(false);
+
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!username || !email || !password) {
@@ -17,6 +49,24 @@ const Register = () => {
     }
     if (cpassword !== password) {
       return toast.error("Password don't match", { theme: "dark" });
+    }
+
+    try {
+      const nameToCheck = { username };
+      const { data } = await axios.post("/users/check", nameToCheck);
+      if (data == "not exist") {
+        // alert("proceed");
+        const userData = { username, email, password };
+        dispatch(register(userData));
+        setLoading(false);
+        return;
+      } else {
+        toast.error(`username ${username} exists.`);
+        setLoading(false);
+        return;
+      }
+    } catch (error) {
+      toast.error("Failed To Register");
     }
   };
 
@@ -138,12 +188,16 @@ const Register = () => {
               />
             </div>
             <div>
-              <button
-                className="bg-[#087fd4] w-full p-[9px] rounded-md text-zinc-300 hover:text-zinc-200"
-                onClick={handleRegister}
-              >
-                Set Up Account
-              </button>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <button
+                  className="bg-[#087fd4] w-full p-[9px] rounded-md text-zinc-300 hover:text-zinc-200"
+                  onClick={handleRegister}
+                >
+                  Set Up Account
+                </button>
+              )}
             </div>
             <div className="mt-[30px] flex items-center gap-[20px] flex-wrap justify-between">
               <Link to="/login" className="underline">
