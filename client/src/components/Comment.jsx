@@ -104,7 +104,7 @@ const Comment = ({ item }) => {
           <div className="p-[10px] text-gray-400">
             <p>
               No Comments for{" "}
-              <span className="text-gray-200">{item?.title}</span> Yet
+              <span className="text-gray-600">{item?.title}</span> Yet
             </p>
           </div>
         )}

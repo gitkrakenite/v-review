@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,6 +29,12 @@ const Create = () => {
   const [loadingImg2, setLoadingImg2] = useState(false);
   const [loadingImg3, setLoadingImg3] = useState(false);
   const [loadingAuth, setLoadingAuth] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
 
   const handleVerify = async () => {
     try {
@@ -158,24 +164,42 @@ const Create = () => {
   };
 
   const handleSubmit = async () => {
-    let creator = user?.username;
-    const reviewData = {
-      title,
-      description,
-      category,
-      rating,
-      creator,
-      image1,
-      image2,
-      image3,
-    };
-    const response = await axios.post("/reviews", reviewData);
-    if (response) {
-      setLoading(false);
-
-      navigate("/home");
+    if (!title || !description || !category || !rating) {
+      return toast.error("A value is missing. Check All Fields");
     }
-    return;
+
+    if (!image1) {
+      return toast.error("image 1 not uploaded");
+    }
+    if (!image2) {
+      return toast.error("image 2 not uploaded");
+    }
+    if (!image3) {
+      return toast.error("image 3 not uploaded");
+    }
+
+    try {
+      setLoading(true);
+      let creator = user?.username;
+      const reviewData = {
+        title,
+        description,
+        category,
+        rating,
+        creator,
+        image1,
+        image2,
+        image3,
+      };
+      const response = await axios.post("/reviews", reviewData);
+      if (response) {
+        setLoading(false);
+        navigate("/home");
+      }
+    } catch (error) {
+      toast.error("Failed To Create Review");
+      setLoading(false);
+    }
   };
 
   return (
@@ -247,7 +271,7 @@ const Create = () => {
                   className="bg-transparent outline-none border-2 border-zinc-500 p-[5px] rounded-md"
                   placeholder="more details of review"
                   minLength={4}
-                  maxLength={200}
+                  maxLength={250}
                   required
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}

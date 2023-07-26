@@ -27,14 +27,6 @@ const createReview = async (req, res) => {
     return res.status(404).send("Details missing");
   }
 
-  const review = await Review.find({
-    title,
-  });
-
-  if (review) {
-    return res.status(400).send("Review Already Exists");
-  }
-
   try {
     const review = await Review.create({
       title,

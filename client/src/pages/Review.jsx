@@ -192,7 +192,7 @@ const Review = () => {
 
                     {!user && (
                       <p className="text-orange-300 text-lg">
-                        You need an account to comment
+                        You need an account to See other people&apos;s comments
                       </p>
                     )}
 
