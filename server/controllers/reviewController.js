@@ -142,6 +142,24 @@ const fetchSpecificPost = async (req, res) => {
   }
 };
 
+// API that checks if review exists
+const checkIfReviewAlreadyExists = async (req, res) => {
+  const { title } = req.body;
+
+  try {
+    const reviewExists = await Review.findOne({ title });
+    if (reviewExists) {
+      let exists = "exists";
+      return res.status(200).send(exists);
+    } else {
+      let exists = "not exist";
+      return res.status(200).send(exists);
+    }
+  } catch (error) {
+    return res.status(400).send("Error Checking");
+  }
+};
+
 module.exports = {
   createReview,
   fetchReviews,
@@ -149,4 +167,5 @@ module.exports = {
   commentOnReview,
   deleteReviews,
   fetchSpecificPost,
+  checkIfReviewAlreadyExists,
 };

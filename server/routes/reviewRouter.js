@@ -6,6 +6,7 @@ const {
   deleteReviews,
   commentOnReview,
   fetchSpecificPost,
+  checkIfReviewAlreadyExists,
 } = require("../controllers/reviewController");
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.post("/category", fetchReviewBasedOnSth); // get all reviews
 router.delete("/:id", deleteReviews); // delete a review
 router.post("/comment/:id", commentOnReview); // comment a review
 router.get("/:id", fetchSpecificPost); // specific review
+router.post("/check", checkIfReviewAlreadyExists); // review exists
 
 module.exports = router;
