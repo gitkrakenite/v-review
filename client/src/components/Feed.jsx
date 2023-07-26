@@ -4,11 +4,14 @@ import {
   AiOutlineSearch,
   AiOutlineStar,
 } from "react-icons/ai";
-import { dummyReview } from "../dummyData";
+
 import { Link } from "react-router-dom";
 // import { BsStarHalf } from "react-icons/bs";
 import Masonry from "react-masonry-css";
 import { useEffect, useState } from "react";
+import axios from "../axios";
+import Spinner from "./Spinner";
+import { toast } from "react-toastify";
 
 const Feed = () => {
   const breakpointColumnsObj = {
@@ -42,6 +45,29 @@ const Feed = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // fetch reviews
+  const [loading, setLoading] = useState(false);
+  const [reviews, setReviews] = useState([]);
+
+  const handleFetch = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/reviews");
+      if (response) {
+        setLoading(false);
+        setReviews(response.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      toast.error("Network Error");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleFetch();
+  }, []);
+
   // search  states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setsearchTimeout] = useState(null);
@@ -59,7 +85,7 @@ const Feed = () => {
 
     setsearchTimeout(
       setTimeout(() => {
-        const searchResults = dummyReview?.filter(
+        const searchResults = reviews?.filter(
           (item) =>
             item.title.toLowerCase().includes(searchText.toLowerCase()) ||
             item.description.toLowerCase().includes(searchText.toLowerCase())
@@ -114,7 +140,7 @@ const Feed = () => {
                     columnClassName="my-masonry-grid_column"
                   >
                     {searchedResults?.map((item) => (
-                      <div key={item.id} className="mb-[1.2em] ">
+                      <div key={item._id} className="mb-[1.2em] ">
                         <Link to={`/review/${item.id}`}>
                           <div>
                             <img src={item.image1} alt="" />
@@ -195,86 +221,92 @@ const Feed = () => {
           </>
         ) : (
           <>
-            <div>
-              <Masonry
-                breakpointCols={breakpointColumnsObj}
-                className="my-masonry-grid "
-                columnClassName="my-masonry-grid_column"
-              >
-                {dummyReview.map((item) => (
-                  <div key={item.id} className="mb-[1.2em] bg-zinc-300 ">
-                    <Link to={`/review/${item.id}`}>
-                      <div>
-                        <img src={item.image1} alt="" />
-                        {/*  */}
-                        <div className="px-[8px] pb-[10px]">
-                          <div className="flex justify-between mt-[10px] items-center">
-                            <p className="text-lg text-zinc-600 font-bold ">
-                              {item.title}
-                            </p>
-                            {/* rating */}
-                            <div>
-                              {item.rating == 1 && (
-                                <div className="flex items-center gap-[5px]">
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                </div>
-                              )}
-                              {item.rating == 2 && (
-                                <div className="flex items-center gap-[5px]">
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                </div>
-                              )}
-                              {item.rating == 3 && (
-                                <div className="flex items-center gap-[5px]">
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                </div>
-                              )}
-                              {item.rating == 4 && (
-                                <div className="flex items-center gap-[5px]">
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiOutlineStar className="text-yellow-500 text-xl" />
-                                </div>
-                              )}
-                              {item.rating == 5 && (
-                                <div className="flex items-center gap-[5px]">
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                  <AiFillStar className="text-yellow-500 text-xl" />
-                                </div>
-                              )}
-                            </div>
-                          </div>
+            {loading ? (
+              <div className="mt-[5em]">
+                <Spinner message="Fetching Reviews" />
+              </div>
+            ) : (
+              <div>
+                <Masonry
+                  breakpointCols={breakpointColumnsObj}
+                  className="my-masonry-grid "
+                  columnClassName="my-masonry-grid_column"
+                >
+                  {reviews?.map((item) => (
+                    <div key={item._id} className="mb-[1.2em] bg-zinc-300 ">
+                      <Link to={`/review/${item._id}`}>
+                        <div>
+                          <img src={item.image1} alt="" />
                           {/*  */}
-                          <p className="mt-[5px]">
-                            {item.description.substring(0, 43)}...
-                          </p>
+                          <div className="px-[8px] pb-[10px]">
+                            <div className="flex justify-between mt-[10px] items-center">
+                              <p className="text-lg text-zinc-600 font-bold ">
+                                {item.title}
+                              </p>
+                              {/* rating */}
+                              <div>
+                                {item.rating == 1 && (
+                                  <div className="flex items-center gap-[5px]">
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                  </div>
+                                )}
+                                {item.rating == 2 && (
+                                  <div className="flex items-center gap-[5px]">
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                  </div>
+                                )}
+                                {item.rating == 3 && (
+                                  <div className="flex items-center gap-[5px]">
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                  </div>
+                                )}
+                                {item.rating == 4 && (
+                                  <div className="flex items-center gap-[5px]">
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiOutlineStar className="text-yellow-500 text-xl" />
+                                  </div>
+                                )}
+                                {item.rating == 5 && (
+                                  <div className="flex items-center gap-[5px]">
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                    <AiFillStar className="text-yellow-500 text-xl" />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            {/*  */}
+                            <p className="mt-[5px]">
+                              {item.description.substring(0, 43)}...
+                            </p>
+                            {/*  */}
+                          </div>
+
                           {/*  */}
                         </div>
-
-                        {/*  */}
-                      </div>
-                    </Link>
-                  </div>
-                ))}
-              </Masonry>
-            </div>
+                      </Link>
+                    </div>
+                  ))}
+                </Masonry>
+              </div>
+            )}
           </>
         )}
       </div>

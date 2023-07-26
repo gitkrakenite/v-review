@@ -47,9 +47,15 @@ const Home = () => {
                 />
               </p>
             </Link>
-            <p className="cursor-pointer" onClick={handleLogout}>
-              LOGOUT
-            </p>
+            <div>
+              {user ? (
+                <p className="cursor-pointer" onClick={handleLogout}>
+                  LOGOUT
+                </p>
+              ) : (
+                <Link to="/login">LOGIN</Link>
+              )}
+            </div>
           </div>
         </div>
         {/* wrapper */}

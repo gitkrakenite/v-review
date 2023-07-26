@@ -27,6 +27,14 @@ const createReview = async (req, res) => {
     return res.status(404).send("Details missing");
   }
 
+  const review = await Review.find({
+    title,
+  });
+
+  if (review) {
+    return res.status(400).send("Review Already Exists");
+  }
+
   try {
     const review = await Review.create({
       title,
@@ -125,10 +133,20 @@ const commentOnReview = async (req, res) => {
   }
 };
 
+const fetchSpecificPost = async (req, res) => {
+  try {
+    const review = await Review.findOne({ _id: req.params.id });
+    res.status(200).send(review);
+  } catch (error) {
+    res.status(500).send("Action Failed");
+  }
+};
+
 module.exports = {
   createReview,
   fetchReviews,
   fetchReviewBasedOnSth,
   commentOnReview,
   deleteReviews,
+  fetchSpecificPost,
 };
