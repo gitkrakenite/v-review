@@ -3,7 +3,6 @@ import Feed from "../components/Feed";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/auth/authSlice";
-import { useEffect } from "react";
 
 const Home = () => {
   const { user } = useSelector((state) => state.auth);
